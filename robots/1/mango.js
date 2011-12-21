@@ -1,1 +1,212 @@
-var l = 9 ; var l1 ; function bid ( game ) { l1 = game . myCards . length ; var l1l = getSuitsSortedByLength ( game . myCards ) ; var l1ll = 0 ; l1l . forEach ( function ( cardsInSuit ) { cardsInSuit . forEach ( function ( card ) { var ll = ( card . rank - l ) / ( 14 - l ) ; l1ll += Math . max ( 0 , ll ) ; } ) ; } ) ; l1ll = Math . round ( l1ll ) ; if ( l1ll == game . forbiddenBid ) { if ( l1ll == 0 ) ++ l1ll ; else -- l1ll ; } return l1ll ; } function play ( game ) { var lll = 0 ; game . players . forEach ( function ( player ) { lll += player . bid ; } ) ; var ll1 = lll >= l1 ; var lll1 = false ; var ll11 = false ; game . players . forEach ( function ( player ) { if ( player . me ) { lll1 = player . takenTricks == player . bid ; ll11 = player . takenTricks > player . bid ; } } ) ; if ( game . cardsOnTable . length > 0 ) { var l11 = game . cardsOnTable [ 0 ] . card ; var l1l1 = getCardsWithSuit ( game . myCards , l11 . suit ) ; if ( l1l1 . length != 0 ) { var l1l11 = l11 ; game . cardsOnTable . forEach ( function ( tableCard ) { if ( tableCard . card . suit == l11 . suit && tableCard . card . rank > l1l11 . rank ) { l1l11 = tableCard . card ; } } ) ; if ( lll1 ) { var ll1l = null ; l1l1 . reverse ( ) ; l1l1 . forEach ( function ( card ) { if ( card . rank < l1l11 . rank ) { ll1l = card ; } } ) ; l1l1 . reverse ( ) ; if ( ll1l ) return ll1l ; else return l1l1 [ 0 ] ; } else { if ( ! ll11 ) { ll1l = null ; l1l1 . forEach ( function ( card ) { if ( card . rank > l1l11 . rank ) { ll1l = card ; } } ) ; if ( ll1l ) return ll1l ; else return l1l1 [ 0 ] ; } else { var ll11l = game . players . sort ( function ( a , b ) { return b . score - a . score ; } ) ; var ll111 = null ; game . cardsOnTable . forEach ( function ( tableCard ) { if ( ! ll111 ) ll111 = tableCard ; else if ( tableCard . card . suit == l11 . suit && tableCard . card . rank > ll111 . card . rank ) { ll111 = tableCard ; } } ) ; if ( ll111 . player . takenTricks + 1 == ll111 . player . bid ) { for ( var lll11 = 0 ; lll11 < l1l1 . length ; lll11 ++ ) { if ( l1l1 [ lll11 ] . rank > ll111 . card . rank ) { return l1l1 [ lll11 ] ; } } } if ( ll111 . player . takenTricks == ll111 . player . bid ) { for ( lll11 = 0 ; lll11 < l1l1 . length ; lll11 ++ ) { if ( l1l1 [ lll11 ] . rank < ll111 . card . rank ) { return l1l1 [ lll11 ] ; } } } if ( ll1 ) { return l1l1 [ 0 ] ; } else { return l1l1 [ l1l1 . length - 1 ] ; } } } } else { ll111 = null ; game . myCards . forEach ( function ( card ) { if ( ! ll111 ) ll111 = card ; else if ( card . rank > ll111 . rank ) ll111 = card ; } ) ; var llll = null ; game . myCards . forEach ( function ( card ) { if ( ! llll ) llll = card ; else if ( card . rank < llll . rank ) llll = card ; } ) ; if ( lll1 ) { return ll111 ; } else { if ( ll11 ) { if ( ll1 ) { return llll ; } else { return ll111 ; } } else { return llll ; } } } } var lll1l = getSuitsSortedByLength ( game . myCards ) ; if ( lll1 ) { for ( var lllll = 2 ; lllll <= 14 ; lllll ++ ) { for ( lll11 = 0 ; lll11 < lll1l . length ; lll11 ++ ) { for ( var ll1ll = 0 ; ll1ll < lll1l [ lll11 ] . length ; ll1ll ++ ) { var l1ll1 = lll1l [ lll11 ] [ ll1ll ] ; if ( l1ll1 . rank == lllll ) { return l1ll1 ; } } } } } else if ( ! ll11 ) { for ( lllll = 14 ; lllll >= 2 ; lllll -- ) { for ( lll11 = 0 ; lll11 < lll1l . length ; lll11 ++ ) { for ( ll1ll = 0 ; ll1ll < lll1l [ lll11 ] . length ; ll1ll ++ ) { l1ll1 = lll1l [ lll11 ] [ ll1ll ] ; if ( l1ll1 . rank == lllll ) { return l1ll1 ; } } } } } ll111 = null ; game . myCards . forEach ( function ( l1ll1 ) { if ( ! ll111 ) ll111 = l1ll1 ; else if ( l1ll1 . rank > ll111 . rank ) ll111 = l1ll1 ; } ) ; llll = null ; game . myCards . forEach ( function ( l1ll1 ) { if ( ! llll ) llll = l1ll1 ; else if ( l1ll1 . rank < llll . rank ) llll = l1ll1 ; } ) ; if ( ll1 ) { return ll111 ; } else { return llll ; } } function getSuitsSortedByLength ( cards ) { var ll11l1 = [ ] ; ll11l1 . push ( getCardsWithSuit ( cards , "HEARTS" ) ) ; ll11l1 . push ( getCardsWithSuit ( cards , "SPADES" ) ) ; ll11l1 . push ( getCardsWithSuit ( cards , "DIAMONDS" ) ) ; ll11l1 . push ( getCardsWithSuit ( cards , "CLUBS" ) ) ; ll11l1 . sort ( function ( a , b ) { return b . length < a . length ; } ) ; return ll11l1 ; } function getCardsWithSuit ( cards , suit ) { cards . sort ( cardSorter ) ; var l11l = [ ] ; cards . forEach ( function ( l1ll1 ) { if ( l1ll1 . suit == suit ) l11l . push ( l1ll1 ) ; } ) ; return l11l ; } function cardSorter ( a , b ) { if ( a . suit != b . suit ) { return a . suit < b . suit ; } return a . rank - b . rank ; } 
+var LOW_CARD_END = 9;
+var numberOfCards;
+
+function bid(game) {
+    numberOfCards = game.myCards.length;
+    var map = getSuitsSortedByLength(game.myCards);
+    var bid = 0;
+    map.forEach(function(cardsInSuit) {
+        cardsInSuit.forEach(function(card) {
+            var delta = (card.rank - LOW_CARD_END) / (14 - LOW_CARD_END);
+            bid += Math.max(0, delta);
+        });
+    });
+    bid = Math.round(bid);
+
+    if (bid == game.forbiddenBid) {
+        if (bid == 0) ++bid;
+        else --bid;
+    }
+    
+	return bid;
+}
+
+function play(game) {
+    var bidSum = 0;
+    game.players.forEach(function(player) { bidSum += player.bid; });
+    var overTricks = bidSum >= numberOfCards;
+
+    var bidFulfilled = false;
+    var busted = false;
+    game.players.forEach(function(player) {
+        if (player.me) {
+            bidFulfilled = player.takenTricks == player.bid;
+            busted = player.takenTricks > player.bid;
+        }
+    });
+	if (game.cardsOnTable.length > 0) {
+		var firstCard = game.cardsOnTable[0].card;
+		var cardsInSuit = getCardsWithSuit(game.myCards, firstCard.suit);
+		if (cardsInSuit.length != 0) {
+		    var highestCardOnTableInSuit = firstCard;
+		    game.cardsOnTable.forEach(function (tableCard) {
+		        if (tableCard.card.suit == firstCard.suit
+		                && tableCard.card.rank > highestCardOnTableInSuit.rank) {
+		            highestCardOnTableInSuit = tableCard.card;
+		        }
+        	});
+		    if (bidFulfilled) {
+    		    var cardToPlay = null;
+
+    	        cardsInSuit.reverse();
+    	        cardsInSuit.forEach(function(card) {
+    	            if (card.rank < highestCardOnTableInSuit.rank) {
+    	                cardToPlay = card;
+    	            }
+    	        });
+    	        cardsInSuit.reverse();
+    	        
+    		    if (cardToPlay) return cardToPlay;
+		        else return cardsInSuit[0];
+    	        
+		    } else {
+		        if (!busted) {
+		            // Try to take
+        		    cardToPlay = null;
+        	        cardsInSuit.forEach(function(card) {
+        	            if (card.rank > highestCardOnTableInSuit.rank) {
+        	                cardToPlay = card;
+        	            }
+        	        });
+        		    if (cardToPlay) return cardToPlay;
+    		        else return cardsInSuit[0];
+		            
+		        } else {
+		            // We're busted, destroy for others
+		            var players = game.players.sort(function(a, b) {
+		                return b.score - a.score;
+		            });
+	                var highest = null;
+                    game.cardsOnTable.forEach(function (tableCard) {
+                        if (!highest) highest = tableCard;
+        		        else if (tableCard.card.suit == firstCard.suit
+        		                && tableCard.card.rank > highest.card.rank) {
+        		            highest = tableCard;
+        		        }
+                    });
+	                // 1. Take from another
+                    if (highest.player.takenTricks + 1 == highest.player.bid) {
+                        for (var i = 0; i < cardsInSuit.length; i++) {
+                            if (cardsInSuit[i].rank > highest.card.rank) {
+                                return cardsInSuit[i];
+                            }
+                        }
+                    }
+	                // 2. Make another take
+	                if (highest.player.takenTricks == highest.player.bid) {
+                        for (i = 0; i < cardsInSuit.length; i++) {
+                            if (cardsInSuit[i].rank < highest.card.rank) {
+                                return cardsInSuit[i];
+                            }
+                        }
+	                }
+	                // 3. Over or under tricks?
+	                if (overTricks) {
+	                    return cardsInSuit[0];
+	                } else {
+	                    return cardsInSuit[cardsInSuit.length - 1];
+	                }
+		        }
+	        }
+		} else {
+		    // We must discard
+	        highest = null;
+	        game.myCards.forEach(function(card) {
+	            if (!highest) highest = card;
+	            else if (card.rank > highest.rank) highest = card;
+	        });
+	        var lowest = null;
+	        game.myCards.forEach(function(card) {
+	            if (!lowest) lowest = card;
+	            else if (card.rank < lowest.rank) lowest = card;
+	        });
+		    if (bidFulfilled) {
+		        // Highest possible
+		        return highest;
+		    } else {
+		        if (busted) {
+	                if (overTricks) {
+	                    return lowest;
+	                } else {
+	                    return highest;
+	                }
+		        } else {
+    		        // Lowest possible
+    		        return lowest;
+		        }
+		    }
+		}
+	}
+
+	var cardsMap = getSuitsSortedByLength(game.myCards);
+	if (bidFulfilled) {
+    	// Play lowest possible in the suit with least cards
+    	for (var r = 2; r <= 14; r++) {
+    	    for (i = 0; i < cardsMap.length; i++) {
+    	        for (var c = 0; c < cardsMap[i].length; c++) {
+    	            var card = cardsMap[i][c];
+    	            if (card.rank == r) {
+    	                return card;
+    	            }
+    	        }
+    	    }
+    	}
+	} else if (!busted) {
+	    // Try to take with high card
+    	for (r = 14; r >= 2; r--) {
+    	    for (i = 0; i < cardsMap.length; i++) {
+    	        for (c = 0; c < cardsMap[i].length; c++) {
+    	            card = cardsMap[i][c];
+    	            if (card.rank == r) {
+    	                return card;
+    	            }
+    	        }
+    	    }
+    	}
+	}
+	// We're busted, destroy for others
+	highest = null;
+    game.myCards.forEach(function(card) {
+        if (!highest) highest = card;
+        else if (card.rank > highest.rank) highest = card;
+    });
+    lowest = null;
+    game.myCards.forEach(function(card) {
+        if (!lowest) lowest = card;
+        else if (card.rank < lowest.rank) lowest = card;
+    });
+    
+    if (overTricks) {
+        return highest;
+    } else {
+        return lowest;
+    }
+}
+
+function getSuitsSortedByLength(cards) {
+    var suits = [];
+    suits.push(getCardsWithSuit(cards, "HEARTS"));
+    suits.push(getCardsWithSuit(cards, "SPADES"));
+    suits.push(getCardsWithSuit(cards, "DIAMONDS"));
+    suits.push(getCardsWithSuit(cards, "CLUBS"));
+    suits.sort(function(a, b) {
+        return b.length < a.length;
+    });
+    return suits;
+}
+
+function getCardsWithSuit(cards, suit) {
+    cards.sort(cardSorter);
+    var suited = [];
+    cards.forEach(function(card) {
+        if (card.suit == suit) suited.push(card);
+    });
+    return suited;
+}
+
+function cardSorter(a, b) {
+    if (a.suit != b.suit) {
+        return a.suit < b.suit;
+    }
+    return a.rank - b.rank;
+}
